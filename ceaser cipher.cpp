@@ -26,4 +26,8 @@ int main(){
                                                                              printf("%c",input[i]);
                                                                              }
                                                                              }
+output:
                                                                              
+enter the input string:hello
+encryption is:khoor
+decryption is:helloH
