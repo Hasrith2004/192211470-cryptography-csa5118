@@ -25,6 +25,6 @@ int main(){
 		
 }
 output:
-8
-Enter string : welcometoourbatch
-w 
+Enter plain text :hello
+Cipher text: svool
+ Plain text : hello
