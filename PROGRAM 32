@@ -1,0 +1,65 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <openssl/dsa.h>
+#include <openssl/sha.h>
+
+#define MESSAGE "Hello, DSA!"
+
+DSA *generateDSAKeyPair() {
+    DSA *dsa = DSA_generate_parameters(2048, NULL, 0, NULL, NULL, NULL, NULL);
+    if (dsa == NULL) {
+        fprintf(stderr, "Error generating DSA parameters.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if (DSA_generate_key(dsa) != 1) {
+        fprintf(stderr, "Error generating DSA key pair.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    return dsa;
+}
+
+DSA_SIG *signMessage(DSA *dsa, const char *message) {
+    unsigned char hash[SHA256_DIGEST_LENGTH];
+    DSA_SIG *signature = DSA_do_sign((unsigned char *)message, strlen(message), dsa);
+    if (signature == NULL) {
+        fprintf(stderr, "Error signing the message.\n");
+        exit(EXIT_FAILURE);
+    }
+    return signature;
+}
+
+int verifySignature(DSA *dsa, const char *message, DSA_SIG *signature) {
+    unsigned char hash[SHA256_DIGEST_LENGTH];
+    if (DSA_do_verify((unsigned char *)message, strlen(message), signature, dsa) != 1) {
+        fprintf(stderr, "Error verifying the signature.\n");
+        return 0; // Verification failed
+    }
+    return 1; // Verification successful
+}
+
+int main() {
+    // Initialize OpenSSL
+    OpenSSL_add_all_algorithms();
+
+    // Generate DSA key pair
+    DSA *dsa = generateDSAKeyPair();
+
+    // Sign the message
+    DSA_SIG *signature = signMessage(dsa, MESSAGE);
+
+    // Verify the signature
+    if (verifySignature(dsa, MESSAGE, signature)) {
+        printf("DSA signature and verification successful.\n");
+    } else {
+        printf("DSA signature verification failed.\n");
+    }
+
+    // Free resources
+    DSA_free(dsa);
+    DSA_SIG_free(signature);
+
+    return 0;
+}
