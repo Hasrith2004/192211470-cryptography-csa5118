@@ -1,0 +1,79 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define ALPHABET_SIZE 26
+void letterFrequencyAttack(const char *ciphertext, int topPlaintexts) {
+    int frequency[ALPHABET_SIZE] = {0};
+    int length = strlen(ciphertext);
+    for (int i = 0; i < length; i++) {
+        if (isalpha(ciphertext[i])) {
+            char letter = tolower(ciphertext[i]);
+            frequency[letter - 'a']++;
+        }
+    }
+    int maxFrequency = 0;
+    int maxFrequencyIndex = 0;
+    for (int i = 0; i < ALPHABET_SIZE; i++) {
+        if (frequency[i] > maxFrequency) {
+            maxFrequency = frequency[i];
+            maxFrequencyIndex = i;
+        }
+    }
+    printf("Top %d possible plaintexts:\n", topPlaintexts);
+    for (int shift = 0; shift < ALPHABET_SIZE; shift++) {
+        printf("Shift %d: ", shift);
+
+        for (int i = 0; i < length; i++) {
+            if (isalpha(ciphertext[i])) {
+                char letter = tolower(ciphertext[i]);
+                char decryptedLetter = 'a' + (letter - 'a' + ALPHABET_SIZE - shift) % ALPHABET_SIZE;
+                if (isupper(ciphertext[i])) {
+                    decryptedLetter = toupper(decryptedLetter);
+                }
+                printf("%c", decryptedLetter);
+            } else {
+                printf("%c", ciphertext[i]);
+            }
+        }
+
+        printf("\n");
+    }
+}
+
+int main() {
+    const char *ciphertext = "Gur dhvpx oebja sbk whzcf bire gur ynml sbk vf n fgevat bs gur tnzr.";
+    int topPlaintexts = 5;
+    letterFrequencyAttack(ciphertext, topPlaintexts);
+
+    return 0;
+}
+OUTPUT:
+Top 5 possible plaintexts:
+Shift 0: Gur dhvpx oebja sbk whzcf bire gur ynml sbk vf n fgevat bs gur tnzr.
+Shift 1: Ftq cguow ndaiz raj vgybe ahqd ftq xmlk raj ue m efduzs ar ftq smyq.
+Shift 2: Esp bftnv mczhy qzi ufxad zgpc esp wlkj qzi td l dectyr zq esp rlxp.
+Shift 3: Dro aesmu lbygx pyh tewzc yfob dro vkji pyh sc k cdbsxq yp dro qkwo.
+Shift 4: Cqn zdrlt kaxfw oxg sdvyb xena cqn ujih oxg rb j bcarwp xo cqn pjvn.
+Shift 5: Bpm ycqks jzwev nwf rcuxa wdmz bpm tihg nwf qa i abzqvo wn bpm oium.
+Shift 6: Aol xbpjr iyvdu mve qbtwz vcly aol shgf mve pz h zaypun vm aol nhtl.
+Shift 7: Znk waoiq hxuct lud pasvy ubkx znk rgfe lud oy g yzxotm ul znk mgsk.
+Shift 8: Ymj vznhp gwtbs ktc ozrux tajw ymj qfed ktc nx f xywnsl tk ymj lfrj.
+Shift 9: Xli uymgo fvsar jsb nyqtw sziv xli pedc jsb mw e wxvmrk sj xli keqi.
+Shift 10: Wkh txlfn eurzq ira mxpsv ryhu wkh odcb ira lv d vwulqj ri wkh jdph.
+Shift 11: Vjg swkem dtqyp hqz lworu qxgt vjg ncba hqz ku c uvtkpi qh vjg icog.
+Shift 12: Uif rvjdl cspxo gpy kvnqt pwfs uif mbaz gpy jt b tusjoh pg uif hbnf.
+Shift 13: The quick brown fox jumps over the lazy fox is a string of the game.
+Shift 14: Sgd pthbj aqnvm enw itlor nudq sgd kzyx enw hr z rsqhmf ne sgd fzld.
+Shift 15: Rfc osgai zpmul dmv hsknq mtcp rfc jyxw dmv gq y qrpgle md rfc eykc.
+Shift 16: Qeb nrfzh yoltk clu grjmp lsbo qeb ixwv clu fp x pqofkd lc qeb dxjb.
+Shift 17: Pda mqeyg xnksj bkt fqilo kran pda hwvu bkt eo w opnejc kb pda cwia.
+Shift 18: Ocz lpdxf wmjri ajs ephkn jqzm ocz gvut ajs dn v nomdib ja ocz bvhz.
+Shift 19: Nby kocwe vliqh zir dogjm ipyl nby futs zir cm u mnlcha iz nby augy.
+Shift 20: Max jnbvd ukhpg yhq cnfil hoxk max etsr yhq bl t lmkbgz hy max ztfx.
+Shift 21: Lzw imauc tjgof xgp bmehk gnwj lzw dsrq xgp ak s kljafy gx lzw ysew.
+Shift 22: Kyv hlztb sifne wfo aldgj fmvi kyv crqp wfo zj r jkizex fw kyv xrdv.
+Shift 23: Jxu gkysa rhemd ven zkcfi eluh jxu bqpo ven yi q ijhydw ev jxu wqcu.
+Shift 24: Iwt fjxrz qgdlc udm yjbeh dktg iwt apon udm xh p higxcv du iwt vpbt.
+Shift 25: Hvs eiwqy pfckb tcl xiadg cjsf hvs zonm tcl wg o ghfwbu ct hvs uoas.
