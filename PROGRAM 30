@@ -1,0 +1,37 @@
+#include <stdio.h>
+#include <string.h>
+#define BLOCK_SIZE 8
+
+void xorBlocks(unsigned char *result, const unsigned char *block1, const unsigned char *block2) {
+    for (int i = 0; i < BLOCK_SIZE; i++) {
+        result[i] = block1[i] ^ block2[i];
+    }
+}
+
+void cbcMac(const unsigned char *message, const unsigned char *key, unsigned char *mac) {
+    unsigned char iv[BLOCK_SIZE] = {0}; // Initialization vector
+    unsigned char temp[BLOCK_SIZE];
+
+    xorBlocks(temp, message, iv);
+
+    xorBlocks(mac, temp, key);
+}
+
+int main() {
+    unsigned char message[BLOCK_SIZE] = {0x12, 0x34, 0x56, 0x78, 0x9A, 0xBC, 0xDE, 0xF0};
+    unsigned char key[BLOCK_SIZE] = {0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6, 0x07, 0x18};
+
+    unsigned char mac[BLOCK_SIZE];
+    cbcMac(message, key, mac);
+
+    printf("CBC-MAC: ");
+    for (int i = 0; i < BLOCK_SIZE; i++) {
+        printf("%02X ", mac[i]);
+    }
+    printf("\n");
+
+    return 0;
+}
+
+OUTPUT :
+CBC-MAC: B3 86 95 AC 7F 4A D9 E8 
