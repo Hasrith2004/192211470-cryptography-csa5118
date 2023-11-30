@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <stdint.h>
+uint32_t leftRotate28(uint32_t value, int shift) {
+    return ((value << shift) | (value >> (28 - shift))) & 0x0FFFFFFF;
+}
+void modifiedKeySchedule(uint64_t initialKey, uint64_t *subkeys) {
+    uint64_t permutedKey = 0;
+    uint64_t mask = 0x8000000000000080;
+    for (int i = 0; i < 56; i++) {
+        permutedKey |= ((initialKey >> (64 - mask)) & 1) << (55 - i);
+        mask >>= 1;
+    }
+    uint32_t leftHalf = (permutedKey >> 28) & 0x0FFFFFFF;
+    uint32_t rightHalf = permutedKey & 0x0FFFFFFF;
+    for (int round = 0; round < 16; round++) {
+        leftHalf = leftRotate28(leftHalf, round);
+        rightHalf = leftRotate28(rightHalf, round);
+        subkeys[round] = ((uint64_t)leftHalf << 28) | (uint64_t)rightHalf;
+        subkeys[round] &= 0x000000000000FFFC;  // Masking to 48 bits
+    }
+}
+
+int main() {
+    uint64_t initialKey = 0x133457799BBCDFF1;
+    uint64_t subkeys[16];
+    modifiedKeySchedule(initialKey, subkeys);
+    printf("Modified Key Schedule:\n");
+    for (int round = 0; round < 16; round++) {
+        printf("Round %2d: 0x%012llX\n", round + 1, subkeys[round]);
+    }
+
+    return 0;
+}
+OUTPUT:
+Modified Key Schedule:
+Round  1: 0x00000000FFFC
+Round  2: 0x00000000FFFC
+Round  3: 0x00000000FFFC
+Round  4: 0x00000000FFFC
+Round  5: 0x00000000FFFC
+Round  6: 0x00000000FFFC
+Round  7: 0x00000000FFFC
+Round  8: 0x00000000FFFC
+Round  9: 0x00000000FFFC
+Round 10: 0x00000000FFFC
+Round 11: 0x00000000FFFC
+Round 12: 0x00000000FFFC
+Round 13: 0x00000000FFFC
+Round 14: 0x00000000FFFC
+Round 15: 0x00000000FFFC
+Round 16: 0x00000000FFFC
