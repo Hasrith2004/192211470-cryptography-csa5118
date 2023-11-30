@@ -1,0 +1,41 @@
+#include <stdio.h>
+#define KEY_SIZE 10
+#define BLOCK_SIZE 8
+
+void sdes_encrypt(const char *plaintext, const char *key, const char *iv, char *ciphertext, int rounds) {
+ 
+    printf("Plaintext:  %s\n", plaintext);
+    printf("Key:        %s\n", key);
+    printf("IV:         %s\n", iv);
+    printf("Ciphertext: %s\n", ciphertext);
+}
+
+void sdes_decrypt(const char *ciphertext, const char *key, const char *iv, char *plaintext, int rounds) {
+  
+    printf("Ciphertext: %s\n", ciphertext);
+    printf("Key:        %s\n", key);
+    printf("IV:         %s\n", iv);
+    printf("Plaintext:  %s\n", plaintext);
+}
+
+int main() {
+    const char *plaintext = "0000000100100011";
+    const char *key = "0111111101";
+    const char *iv = "10101010";
+    char ciphertext[BLOCK_SIZE + 1];
+    char decrypted_text[BLOCK_SIZE + 1];
+
+    sdes_encrypt(plaintext, key, iv, ciphertext, 2);
+
+    sdes_decrypt(ciphertext, key, iv, decrypted_text, 2);
+
+    return 0;
+}
+OUTPUT:
+Plaintext:  0000000100100011
+Key:        0111111101
+IV:         10101010
+Ciphertext: 
+Ciphertext: 
+Key:        0111111101
+IV:         10101010
