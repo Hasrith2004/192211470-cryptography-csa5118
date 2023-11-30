@@ -1,0 +1,66 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <openssl/rsa.h>
+#include <openssl/pem.h>
+
+// Function to decrypt a message using RSA private key
+int rsaDecrypt(const unsigned char *encrypted_message, size_t encrypted_length, RSA *private_key,
+               unsigned char *decrypted_message) {
+    return RSA_private_decrypt(encrypted_length, encrypted_message, decrypted_message,
+                               private_key, RSA_PKCS1_PADDING);
+}
+
+int main() {
+    // Initialize OpenSSL
+    OpenSSL_add_all_algorithms();
+
+    // Bob's private key (in real-world scenarios, this should be securely stored)
+    const char *private_key_path = "bob_private_key.pem";
+
+    // Read Bob's private key from file
+    FILE *private_key_file = fopen(private_key_path, "r");
+    if (!private_key_file) {
+        fprintf(stderr, "Error opening private key file.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    RSA *bob_private_key = PEM_read_RSAPrivateKey(private_key_file, NULL, NULL, NULL);
+    fclose(private_key_file);
+
+    if (!bob_private_key) {
+        fprintf(stderr, "Error reading private key.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // Example encrypted message received from Alice
+    const unsigned char encrypted_message[] = {
+        /* Replace this with the actual encrypted message */
+    };
+
+    size_t encrypted_length = sizeof(encrypted_message) / sizeof(encrypted_message[0]);
+
+    // Allocate memory for the decrypted message
+    unsigned char *decrypted_message = (unsigned char *)malloc(RSA_size(bob_private_key));
+    if (!decrypted_message) {
+        fprintf(stderr, "Memory allocation error.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // Decrypt the message using Bob's private key
+    int decrypted_length = rsaDecrypt(encrypted_message, encrypted_length, bob_private_key, decrypted_message);
+
+    if (decrypted_length == -1) {
+        fprintf(stderr, "Error decrypting the message.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // Display the decrypted message
+    printf("Decrypted message: %.*s\n", decrypted_length, decrypted_message);
+
+    // Free allocated memory
+    free(decrypted_message);
+    RSA_free(bob_private_key);
+
+    return 0;
+}
