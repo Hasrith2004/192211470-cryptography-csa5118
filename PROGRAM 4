@@ -1,0 +1,46 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+// Function to perform polyalphabetic substitution encryption
+void polySubEncrypt(const char *plaintext, const char *keyword, char *ciphertext) {
+    int length = strlen(plaintext);
+    int keyLength = strlen(keyword);
+
+    for (int i = 0; i < length; i++) {
+        if (isalpha(plaintext[i])) {
+            char base = islower(plaintext[i]) ? 'a' : 'A';
+            int shift = tolower(keyword[i % keyLength]) - 'a';
+
+            ciphertext[i] = (plaintext[i] - base + shift) % 26 + base;
+        } else {
+            // Non-alphabetic characters remain unchanged
+            ciphertext[i] = plaintext[i];
+        }
+    }
+    ciphertext[length] = '\0'; // Null-terminate the string
+}
+
+int main() {
+    const char *plaintext = "HelloWorld";
+    const char *keyword = "KEY";
+
+    int length = strlen(plaintext);
+    char *ciphertext = (char *)malloc(length + 1);
+
+    if (ciphertext == NULL) {
+        fprintf(stderr, "Memory allocation error.\n");
+        return 1;
+    }
+
+    polySubEncrypt(plaintext, keyword, ciphertext);
+
+    printf("Plaintext: %s\n", plaintext);
+    printf("Keyword: %s\n", keyword);
+    printf("Ciphertext: %s\n", ciphertext);
+
+    free(ciphertext);
+
+    return 0;
+}
