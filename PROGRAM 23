@@ -1,0 +1,57 @@
+#include <stdio.h>
+#include <string.h>
+#define KEY_SIZE 10
+#define BLOCK_SIZE 8
+#define ROUNDS 2
+
+void sdes_encrypt(const char *plaintext, const char *key, char *ciphertext) {
+  
+    printf("Plaintext:  %s\n", plaintext);
+    printf("Key:        %s\n", key);
+    printf("Ciphertext: %s\n", ciphertext);
+}
+
+void sdes_decrypt(const char *ciphertext, const char *key, char *plaintext) {
+   
+    printf("Ciphertext: %s\n", ciphertext);
+    printf("Key:        %s\n", key);
+    printf("Plaintext:  %s\n", plaintext);
+}
+
+void counter_mode_encrypt(const char *plaintext, const char *key, const char *counter, char *ciphertext) {
+ 
+    printf("Counter:    %s\n", counter);
+    printf("Plaintext:  %s\n", plaintext);
+    printf("Key:        %s\n", key);
+    printf("Ciphertext: %s\n", ciphertext);
+}
+
+void counter_mode_decrypt(const char *ciphertext, const char *key, const char *counter, char *plaintext) {
+  
+    printf("Counter:    %s\n", counter);
+    printf("Ciphertext: %s\n", ciphertext);
+    printf("Key:        %s\n", key);
+    printf("Plaintext:  %s\n", plaintext);
+}
+
+int main() {
+    const char *plaintext = "00000001000000100000100";
+    const char *key = "0111111101";
+    const char *counter = "00000000";
+
+    char ciphertext[BLOCK_SIZE + 1];
+    char decrypted_text[BLOCK_SIZE + 1];
+    counter_mode_encrypt(plaintext, key, counter, ciphertext);
+
+    counter_mode_decrypt(ciphertext, key, counter, decrypted_text);
+
+    return 0;
+}
+OUTPUT:
+Counter:    00000000
+Plaintext:  00000001000000100000100
+Key:        0111111101
+Ciphertext: 
+Counter:    00000000
+Ciphertext: 
+Key:        0111111101
