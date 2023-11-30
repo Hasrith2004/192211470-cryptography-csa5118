@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <string.h>
+void encryptVigenere(const char *plaintext, const int *key, char *ciphertext) {
+    int length = strlen(plaintext);
+    for (int i = 0; i < length; i++) {
+        if (plaintext[i] >= 'a' && plaintext[i] <= 'z') {
+            ciphertext[i] = (char)((plaintext[i] - 'a' + key[i % length]) % 26 + 'a');
+        } else if (plaintext[i] >= 'A' && plaintext[i] <= 'Z') {
+            ciphertext[i] = (char)((plaintext[i] - 'A' + key[i % length]) % 26 + 'A');
+        } else {
+            ciphertext[i] = plaintext[i];
+        }
+    }
+    ciphertext[length] = '\0';
+}
+void decryptVigenere(const char *ciphertext, const int *key, char *decryptedtext) {
+    int length = strlen(ciphertext);
+    for (int i = 0; i < length; i++) {
+        if (ciphertext[i] >= 'a' && ciphertext[i] <= 'z') {
+            decryptedtext[i] = (char)((ciphertext[i] - 'a' - key[i % length] + 26) % 26 + 'a');
+        } else if (ciphertext[i] >= 'A' && ciphertext[i] <= 'Z') {
+            decryptedtext[i] = (char)((ciphertext[i] - 'A' - key[i % length] + 26) % 26 + 'A');
+        } else {
+            decryptedtext[i] = ciphertext[i];
+        }
+    }
+    decryptedtext[length] = '\0';
+}
+
+int main() {
+    char plaintext[] = "send more money";
+    int keyStream[] = {9, 0, 1, 7, 23, 15, 21, 14, 11, 11, 2, 8, 9};
+    char ciphertext[50];
+    encryptVigenere(plaintext, keyStream, ciphertext);
+
+    printf("Part (a): Encrypted Ciphertext: %s\n", ciphertext);
+    char decryptedtext[50];
+    int keyToDecrypt[] = {20, 0, 18, 25, 14, 14, 19, 14, 4, 13, 4, 3, 19, 4, 19, 0, 24, 4, 13, 24, 3, 19, 4, 13, 3};
+    decryptVigenere(ciphertext, keyToDecrypt, decryptedtext);
+
+    printf("Part (b): Decrypted Plaintext: %s\n", decryptedtext);
+
+    return 0;
+}
+OUTPUT:
+Part (a): Encrypted Ciphertext: beok bjfp owwey
+Part (b): Decrypted Plaintext: hewl nqrl ktdaf
+
+
