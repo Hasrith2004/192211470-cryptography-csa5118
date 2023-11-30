@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <math.h>
+#define MATRIX_SIZE 2
+void multiplyMatrix(int key[MATRIX_SIZE][MATRIX_SIZE], int message[MATRIX_SIZE], int result[MATRIX_SIZE]) {
+    for (int i = 0; i < MATRIX_SIZE; i++) {
+        result[i] = 0;
+        for (int j = 0; j < MATRIX_SIZE; j++) {
+            result[i] += key[i][j] * message[j];
+        }
+        result[i] %= 26;  // Modulo 26 to handle the alphabet size
+    }
+}
+void encryptHillCipher(char *message, int key[MATRIX_SIZE][MATRIX_SIZE]) {
+    int messageLength = strlen(message);
+    int paddedLength = messageLength + (MATRIX_SIZE - messageLength % MATRIX_SIZE) % MATRIX_SIZE;
+    char *paddedMessage = (char *)malloc((paddedLength + 1) * sizeof(char));
+    strcpy(paddedMessage, message);
+    for (int i = messageLength; i < paddedLength; i++) {
+        paddedMessage[i] = 'X';
+    }
+    paddedMessage[paddedLength] = '\0';
+
+    for (int i = 0; i < paddedLength; i += MATRIX_SIZE) {
+        int messageChunk[MATRIX_SIZE];
+        int result[MATRIX_SIZE];
+        for (int j = 0; j < MATRIX_SIZE; j++) {
+            messageChunk[j] = paddedMessage[i + j] - 'a';
+        }
+        multiplyMatrix(key, messageChunk, result);
+        for (int j = 0; j < MATRIX_SIZE; j++) {
+            printf("%c", result[j] + 'a');
+        }
+    }
+    free(paddedMessage);
+}
+int main() {
+    int key[MATRIX_SIZE][MATRIX_SIZE] = {{9, 4}, {5, 7}};
+    char message[] = "meet me at the usual place at ten rather than eight oclock";
+
+    printf("Original Message: %s\n", message);
+    printf("Encrypted Message: ");
+    encryptHillCipher(message, key);
+    printf("\n");
+    return 0;
+}
+OUTPUT:
+Original Message: meet me at the usual place at ten rather than eight oclock
+Encrypted Message: ukixPZQNydRWblV^iwsz\UvdimTTVKftTaxhroajRWljTaqyebVKegzxgc
+
