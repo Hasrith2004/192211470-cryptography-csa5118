@@ -1,0 +1,41 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int gcd(int a, int b) {
+    while (b != 0) {
+        int temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+
+int main() {
+ 
+    int e = 65537; 
+    int n = 3233;  
+
+    int plaintext_block_factor = 17;
+
+    if (n % plaintext_block_factor == 0 && plaintext_block_factor != 1 && plaintext_block_factor != n) {
+  
+        int factor_p = plaintext_block_factor;
+        int factor_q = n / plaintext_block_factor;
+
+        printf("Found factors p and q: %d and %d\n", factor_p, factor_q);
+        int phi_n = (factor_p - 1) * (factor_q - 1);
+        int d = 0;
+
+        while ((e * d) % phi_n != 1) {
+            d++;
+        }
+
+        printf("Calculated private key (d): %d\n", d);
+    } else {
+        printf("No non-trivial factor found. Common modulus attack unsuccessful.\n");
+    }
+
+    return 0;
+}
+OUTPUT:
+No non-trivial factor found. Common modulus attack unsuccessful.
